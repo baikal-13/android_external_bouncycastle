@@ -15,7 +15,7 @@
 //
 
 package {
-    default_visibility: ["//visibility:private"],
+    default_visibility: ["//visibility:public"],
     default_applicable_licenses: ["external_bouncycastle_license"],
 }
 
@@ -88,7 +88,6 @@ java_library {
         "//packages/modules/ArtPrebuilt",
         "//platform/external/bouncycastle", // ✅ Added
         "//libcore/mmodules/intracoreapi",  // ✅ Added
-        "//visibility:public",
     ],
 
     apex_available: [
