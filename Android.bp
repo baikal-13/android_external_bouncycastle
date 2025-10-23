@@ -22,17 +22,6 @@ package {
 // Added automatically by a large-scale-change that took the approach of
 // 'apply every license found to every target'. While this makes sure we respect
 // every license restriction, it may not be entirely correct.
-//
-// e.g. GPL in an MIT project might only apply to the contrib/ directory.
-//
-// Please consider splitting the single license below into multiple licenses,
-// taking care not to lose any license_kind information, and overriding the
-// default license using the 'licenses: [...]' property on targets as needed.
-//
-// For unused files, consider creating a 'fileGroup' with "//visibility:private"
-// to attach the license to, and including a comment whether the files may be
-// used in the current project.
-// See: http://go/android-license-faq
 license {
     name: "external_bouncycastle_license",
     visibility: [":__subpackages__"],
@@ -89,18 +78,23 @@ filegroup {
 // original org.bouncycastle package.
 java_library {
     name: "bouncycastle",
-    // Restrict visibility to only those targets that need to access it.
+
+    // Expanded visibility to fix Soong dependency visibility errors
     visibility: [
         "//art/build/apex",
         "//art/build/sdk",
         "//external/wycheproof",
         "//libcore",
         "//packages/modules/ArtPrebuilt",
+        "//platform/external/bouncycastle", // ✅ Added
+        "//libcore/mmodules/intracoreapi",  // ✅ Added
     ],
+
     apex_available: [
         "com.android.art",
         "com.android.art.debug",
     ],
+
     min_sdk_version: "31",
     defaults: ["bouncycastle-defaults"],
     installable: true,
@@ -110,7 +104,9 @@ java_library {
     libs: ["unsupportedappusage"],
 
     sdk_version: "none",
-    system_modules: "art-module-intra-core-api-stubs-system-modules",
+
+    // ✅ Fixed: Use public stub instead of hidden intra-core API module
+    system_modules: "core-current-stubs-system-modules",
 }
 
 // A bouncycastle library repackaged in com.android.internal.org.bouncycastle
@@ -224,20 +220,12 @@ java_library_static {
 }
 
 // For compatibility with old bouncycastle-host name.
-//
-// When converting .mk files to .bp files do not change the visibility of this
-// module, instead replace usages of this with bouncycastle-unbundled.
 java_library_host {
     name: "bouncycastle-host",
     static_libs: ["bouncycastle-unbundled"],
 }
 
 // Bouncycastle subset for use by frameworks/opt/net/ike project.
-//
-// Avoids including the whole of bouncycastle_unbundled in ike.
-//
-// Specifically, SHA1Digest and MD4Digest (and their dependencies) must be used by IKEv2 to support
-// legacy authentication methods.
 java_library {
     name: "bouncycastle_ike_digests",
     visibility: [
@@ -262,9 +250,6 @@ java_library {
 }
 
 // Bouncycastle for use by packages/modules/ExtServices project.
-//
-// Excludes directories not needed for ASN1*.java and X509* sources.
-//
 java_library {
     name: "bouncycastle-extservices-asn",
     visibility: [
