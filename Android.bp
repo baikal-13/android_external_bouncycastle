@@ -106,7 +106,7 @@ java_library {
     sdk_version: "none",
 
     // ✅ Fixed: Use public stub instead of hidden intra-core API module
-    system_modules: "core-current-stubs-system-modules",
+    system_modules: "art-module-intra-core-api-stubs-system-modules",
 }
 
 // A bouncycastle library repackaged in com.android.internal.org.bouncycastle
